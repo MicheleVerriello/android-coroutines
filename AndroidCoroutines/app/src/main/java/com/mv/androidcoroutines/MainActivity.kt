@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -18,12 +19,12 @@ import com.mv.androidcoroutines.models.dtos.User
 import com.mv.androidcoroutines.repositories.IUserRepository
 import com.mv.androidcoroutines.repositories.UserRepository
 import com.mv.androidcoroutines.ui.theme.AndroidCoroutinesTheme
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class MainActivity : ComponentActivity() {
 
     private val TAG = "MainActivity"
+    val scope = MainScope() + CoroutineName("MainActivity")
 
     private val userRepository : IUserRepository = UserRepository()
     var user = mutableStateOf(
@@ -34,13 +35,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+
+            val navController = rememberNavController()
             AndroidCoroutinesTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    MainActivityView(user)
+                    Scaffold(
+                        bottomBar =
+                    ) {
+
                 }
             }
         }
@@ -48,15 +49,16 @@ class MainActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
-        GlobalScope.launch {
-            user.value = userRepository.getUserById("9XvTHyBur8ejh8BKaAya")!!
-            println(user.toString())
+        scope.launch {
+                user.value = userRepository.getUserById("9XvTHyBur8ejh8BKaAya")!!
+                println(user.toString())
         }
     }
 }
 
 @Composable
 fun MainActivityView(user: MutableState<User>) {
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
