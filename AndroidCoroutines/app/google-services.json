@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "319974362502",
+    "project_id": "health-project-acbd0",
+    "storage_bucket": "health-project-acbd0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:319974362502:android:c07dc0b9d86bfae7bcf007",
+        "android_client_info": {
+          "package_name": "com.mv.androidcoroutines"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "319974362502-ooqu7le1mc9kqckfve6mvesceb2k3ee3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1JSH7SxwX57jcUCazi63Rkn7oALMVeP8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "319974362502-ooqu7le1mc9kqckfve6mvesceb2k3ee3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:319974362502:android:ee4be6caa67a6cb3bcf007",
+        "android_client_info": {
+          "package_name": "com.uniba.mv.healthproject.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "319974362502-ooqu7le1mc9kqckfve6mvesceb2k3ee3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1JSH7SxwX57jcUCazi63Rkn7oALMVeP8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "319974362502-ooqu7le1mc9kqckfve6mvesceb2k3ee3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
