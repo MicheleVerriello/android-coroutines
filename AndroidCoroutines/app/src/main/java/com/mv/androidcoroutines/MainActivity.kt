@@ -1,24 +1,24 @@
 package com.mv.androidcoroutines
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.mv.androidcoroutines.models.dtos.Date
-import com.mv.androidcoroutines.models.dtos.Gender
-import com.mv.androidcoroutines.models.dtos.User
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.mv.androidcoroutines.repositories.IUserRepository
 import com.mv.androidcoroutines.repositories.UserRepository
 import com.mv.androidcoroutines.ui.theme.AndroidCoroutinesTheme
+import com.mv.androidcoroutines.ui.views.settings.SettingsScreen
+import com.mv.androidcoroutines.ui.views.settings.SettingsViewModel
 import kotlinx.coroutines.*
 
 class MainActivity : ComponentActivity() {
@@ -27,9 +27,7 @@ class MainActivity : ComponentActivity() {
     val scope = MainScope() + CoroutineName("MainActivity")
 
     private val userRepository : IUserRepository = UserRepository()
-    var user = mutableStateOf(
-        User(id = "", name = "", surname = "", email = "", gender = Gender.NOT_SPECIFIED, birthdayDate = Date(1,1,1))
-    )
+    private val userId = "9XvTHyBur8ejh8BKaAya"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,30 +37,38 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             AndroidCoroutinesTheme {
                     Scaffold(
-                        bottomBar =
+                        bottomBar = { BottomBar(navController = navController) }
                     ) {
-
-                }
+                        NavHost(
+                            modifier = Modifier.padding(it),
+                            navController = navController,
+                            startDestination = "settings"
+                        ) {
+                            composable("settings") { SettingsScreen(SettingsViewModel(userId)) }
+                        }
+                    }
             }
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        scope.launch {
-                user.value = userRepository.getUserById("9XvTHyBur8ejh8BKaAya")!!
-                println(user.toString())
-        }
-    }
+  //  override fun onStart() {
+    //     super.onStart()
+    //    scope.launch {
+    //            user.value = userRepository.getUserById("9XvTHyBur8ejh8BKaAya")!!
+    //           println(user.toString())
+    //    }
+    //}
 }
 
 @Composable
-fun MainActivityView(user: MutableState<User>) {
+fun BottomBar(navController: NavController) {
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Text(text = user.value.toString())
+    BottomNavigation(modifier = Modifier.fillMaxWidth()) {
+        BottomNavigationItem(
+            selected = true,
+            onClick = { navController.navigate("settings") },
+            icon = { Icon(imageVector = Icons.Default.Settings, contentDescription = null) }
+        )
     }
 
 }
