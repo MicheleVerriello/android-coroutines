@@ -10,7 +10,9 @@ import com.mv.androidcoroutines.models.dtos.User
 import com.mv.androidcoroutines.repositories.IUserRepository
 import com.mv.androidcoroutines.repositories.UserRepository
 import com.mv.androidcoroutines.utils.hashPassword
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class SettingsViewModel(val id: String): ViewModel() {
 
@@ -34,8 +36,8 @@ class SettingsViewModel(val id: String): ViewModel() {
 
     private var user: User? = null
 
-    private fun getActualPassword() {
-
+    private suspend fun getActualPassword() {
+        actualPassword = userRepository.getPasswordByUserId(id)
     }
 
     fun setNewPassword(newPassword: String) {
@@ -51,20 +53,22 @@ class SettingsViewModel(val id: String): ViewModel() {
     }
 
     fun getUser() {
-        viewModelScope.launch {
-           user
-        }
     }
 
-    fun changePassword() {
+    suspend fun changePassword() = coroutineScope {
 
-        viewModelScope.launch {
-            actualPassword = userRepository.getPasswordByUserId(id)
+        val job1 = viewModelScope.launch {
+            getActualPassword()
+        }
 
+         val job2 = viewModelScope.launch {
             if(hashPassword(_newPassword) == actualPassword && newRepeatedPassword == newPassword) {
                 val result = userRepository.updatePasswordByUserId(id = id, password = _newPassword)
                 Log.d("changePassword", result.toString())
             }
         }
+
+        job1.join()
+        job2.join()
     }
 }
