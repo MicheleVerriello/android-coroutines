@@ -46,5 +46,13 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
         ) {
             Text(text = "Change Password")
         }
+
+        if(viewModel.showBadDialog) {
+            Text(text = "Bad")
+        }
+
+        if(viewModel.showOkDialog) {
+            Text(text = "Good")
+        }
     }
 }

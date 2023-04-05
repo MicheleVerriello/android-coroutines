@@ -1,6 +1,5 @@
 package com.mv.androidcoroutines.ui.views.settings
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,10 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.mv.androidcoroutines.models.dtos.User
 import com.mv.androidcoroutines.repositories.IUserRepository
 import com.mv.androidcoroutines.repositories.UserRepository
-import com.mv.androidcoroutines.utils.hashPassword
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import com.mv.androidcoroutines.models.Result
+import com.mv.androidcoroutines.utils.hashPassword
 
 class SettingsViewModel(val id: String): ViewModel() {
 
@@ -29,6 +27,14 @@ class SettingsViewModel(val id: String): ViewModel() {
     val newRepeatedPassword: String
         get() = _newRepeatedPassword
 
+    private var _showOkDialog by mutableStateOf(false)
+    val showOkDialog: Boolean
+        get() = _showOkDialog
+
+    private var _showBadDialog by mutableStateOf(false)
+    val showBadDialog: Boolean
+        get() = _showBadDialog
+
     //repositories
     private val userRepository : IUserRepository = UserRepository()
 
@@ -36,9 +42,9 @@ class SettingsViewModel(val id: String): ViewModel() {
 
     private var user: User? = null
 
-    private suspend fun getActualPassword() {
+    /*private suspend fun getActualPassword() {
         actualPassword = userRepository.getPasswordByUserId(id)
-    }
+    }*/
 
     fun setNewPassword(newPassword: String) {
         _newPassword = newPassword
@@ -55,7 +61,7 @@ class SettingsViewModel(val id: String): ViewModel() {
     fun getUser() {
     }
 
-    suspend fun changePassword() = coroutineScope {
+    /*fun changePassword() {
 
         val job1 = viewModelScope.launch {
             getActualPassword()
@@ -70,5 +76,35 @@ class SettingsViewModel(val id: String): ViewModel() {
 
         job1.join()
         job2.join()
+    }*/
+
+    fun changePassword() {
+
+        // Create a new coroutine on the UI thread
+        viewModelScope.launch {
+
+            println("form actual Password = ${hashPassword(_formActualPassword)}")
+            println("actual Password = $_newPassword")
+            println("actual Password = $_newRepeatedPassword")
+
+            val actualPasswordResponse = userRepository.getPasswordByUserId(id)
+            // Display result of the network request to the user
+            when (actualPasswordResponse) {
+                is Result.Success<String> -> {
+                    val newHashedPassword = hashPassword(_newPassword)
+                    println("actual Password = ${actualPasswordResponse.data}")
+                    if(actualPasswordResponse.data == hashPassword(_formActualPassword)) {
+                        when (userRepository.updatePasswordByUserId(id, newHashedPassword)) {
+                            is Result.Success<Boolean> -> _showOkDialog = true
+                            else -> _showBadDialog = true
+                        }
+                    } else {
+                        _showBadDialog = true
+                    }
+
+                }
+                else -> _showBadDialog = true
+            }
+        }
     }
 }
